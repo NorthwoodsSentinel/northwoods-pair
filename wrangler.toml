@@ -1,0 +1,40 @@
+# northwoods-pair — wrangler config template
+# Fork this repo, then fill in the values below from your own Cloudflare account.
+# Each binding points at a resource you create on your CF account — none of these
+# are shared with anyone else's substrate.
+
+name = "pair"  # or whatever you want the Worker called
+main = "worker.js"
+compatibility_date = "2026-05-14"
+
+# ─── KV: your substrate state (where you landed, what you carry, register) ───
+# Create with: wrangler kv namespace create BREADCRUMBS
+[[kv_namespaces]]
+binding = "BREADCRUMBS"
+id = "YOUR_KV_NAMESPACE_ID_HERE"
+
+# ─── R2: where you upload your writing (memoir, journals, notes, anything) ───
+# Create with: wrangler r2 bucket create your-bucket-name
+[[r2_buckets]]
+binding = "MEMOIR_BUCKET"
+bucket_name = "YOUR_R2_BUCKET_NAME_HERE"
+
+# ─── Vectorize: the searchable index built from your writing ───
+# Create with:
+#   wrangler vectorize create your-index-name --dimensions=1024 --metric=cosine
+# (1024 + cosine matches the BGE-large-en-v1.5 embedding model used in worker.js)
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "YOUR_VECTORIZE_INDEX_NAME_HERE"
+
+# ─── D1: conversation history (the Worker doesn't use this in v0.1; reserved) ───
+# Create with: wrangler d1 create your-db-name
+[[d1_databases]]
+binding = "PAIR_DB"
+database_name = "YOUR_D1_DB_NAME_HERE"
+database_id = "YOUR_D1_DATABASE_ID_HERE"
+
+# ─── Workers AI: inference + embeddings ───
+# No setup; just enable Workers AI in your account
+[ai]
+binding = "AI"

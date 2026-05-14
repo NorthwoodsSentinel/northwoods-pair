@@ -1,0 +1,12 @@
+.wrangler/
+.dev.vars
+.env
+.env.*
+node_modules/
+*.log
+.DS_Store
+
+# Local working files / personal substrate
+memoir/
+journal/
+private/
