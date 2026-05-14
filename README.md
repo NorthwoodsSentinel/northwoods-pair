@@ -64,26 +64,29 @@ Prerequisites: a Cloudflare account, `wrangler` CLI installed, Node ≥18.
 git clone https://github.com/NorthwoodsSentinel/northwoods-pair.git
 cd northwoods-pair
 
-# 2. Provision your bindings (one-time)
+# 2. Change PERSON_NAME at the top of worker.js to your name
+#    (look for the `CONFIGURE ME` block — one constant to edit)
+
+# 3. Provision your bindings (one-time)
 wrangler kv namespace create BREADCRUMBS
 wrangler r2 bucket create your-bucket-name
 wrangler vectorize create your-index-name --dimensions=1024 --metric=cosine
 wrangler d1 create your-db-name
 
-# 3. Open wrangler.toml and fill in the IDs returned by the commands above
+# 4. Open wrangler.toml and fill in the IDs returned by the commands above
 
-# 4. Deploy
+# 5. Deploy
 wrangler deploy
 
-# 5. Upload your writing to R2
+# 6. Upload your writing to R2
 wrangler r2 object put your-bucket-name/memoir/my-writing.md --file ~/path/to/file.md
 
-# 6. Build the index (one POST)
+# 7. Build the index (one POST)
 curl -X POST https://pair.<your-subdomain>.workers.dev/ingest \
   -H "Content-Type: application/json" \
   -d '{"prefix":"memoir/"}'
 
-# 7. Chat
+# 8. Chat
 curl -X POST https://pair.<your-subdomain>.workers.dev/chat \
   -H "Content-Type: application/json" \
   -d '{"message":"what should I be thinking about today"}'

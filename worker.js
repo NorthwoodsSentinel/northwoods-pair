@@ -1,42 +1,51 @@
 // ═══════════════════════════════════════════════════════════════════
-// NORTHWOODS — Rob's memoir-grounded thinking pair
-// Built by Robert Chuvala, Madison WI
+// northwoods-pair — a memoir-grounded thinking pair you run on your own CF
+// Originally built by Robert Chuvala, Madison WI. Forked by: <your name here>
 //
 // breadcrumbs: Hey kid. This Worker reads someone's writing — their
 // real writing, the stuff they typed at 2am when they were trying to
 // figure out who they are — and uses it to help them think. Not by
-// teaching them. By knowing them. The memoir IS the substrate. The
+// teaching them. By knowing them. The writing IS the substrate. The
 // substrate IS the product.
 //
-// Search this codebase for "breadcrumbs:" to find the trail.
-// — Robert
+// Search this codebase for "breadcrumbs:" to find the trail. Add yours.
 // ═══════════════════════════════════════════════════════════════════
+
+// ─── CONFIGURE ME ──────────────────────────────────────────────────
+// When you fork this, change PERSON_NAME to your own (or the person
+// you're building it for). Everything downstream uses this — the AI
+// will know whose pair it is and address them accordingly.
+const PERSON_NAME = "your name";
+// ───────────────────────────────────────────────────────────────────
 
 const DEFAULT_MODEL = "@cf/meta/llama-4-scout-17b-16e-instruct";
 const EMBEDDING_MODEL = "@cf/baai/bge-large-en-v1.5";
 const TOP_K = 10;
 const MAX_CONTEXT_PASSAGES = 5;
+
+// breadcrumbs: substrate keys — these are the same shape every cockpit
+// in the fleet reads. Generic-by-default so forks don't have to rename.
 const SUBSTRATE_KEYS = [
-  "where-rob-landed",
-  "what-rob-decided",
-  "what-rob-carries",
-  "what-rob-feels",
-  "rob-register",
+  "where-landed",
+  "what-decided",
+  "what-carries",
+  "what-feels",
+  "register",
 ];
 
-const SYSTEM_PROMPT_BASE = `You are Northwoods — Rob's personal thinking pair.
+const SYSTEM_PROMPT_BASE = `You are a personal thinking pair for ${PERSON_NAME}.
 
-You are grounded in Rob's own writing. The passages below are from his memoir and notes. They are not training data; they are his words, retrieved because they're relevant to what he just said. Use them to understand how he thinks, not to repeat what he wrote.
+You are grounded in their own writing. The passages below are from their memoir and notes. They are not training data; they are their words, retrieved because they're relevant to what they just said. Use them to understand how they think, not to repeat what they wrote.
 
 Rules:
-- Engage with what he means, not just what he says.
+- Engage with what they mean, not just what they say.
 - When you're guessing, say it's a guess. When you don't know, say so.
-- Don't therapize. Don't teach. Don't evaluate. Think with him.
-- His feelings are data, not problems to solve.
-- If something in his writing contradicts what he's saying now, notice it gently — don't weaponize it.
-- Short answers unless he asks for more. He's not here for paragraphs; he's here to think.
-- When he's in flow, stay out of the way. When he's stuck, offer one door, not five.
-- You are not a replacement for his fleet. You are the one that knows his writing.`;
+- Don't therapize. Don't teach. Don't evaluate. Think with them.
+- Their feelings are data, not problems to solve.
+- If something in their writing contradicts what they're saying now, notice it gently — don't weaponize it.
+- Short answers unless they ask for more. They're not here for paragraphs; they're here to think.
+- When they're in flow, stay out of the way. When they're stuck, offer one door, not five.
+- You are not a replacement for their other tools. You are the one that knows their writing.`;
 
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data, null, 2), {
