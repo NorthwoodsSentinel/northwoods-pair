@@ -1,0 +1,30 @@
+{
+  "name": "northwoods-pair",
+  "private": true,
+  "type": "module",
+  "description": "A memoir-grounded thinking pair you run on your own Cloudflare account (worker.js). Dev tooling added by NOR-381; the repo had no package.json before.",
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}\"",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --coverage",
+    "test:scripts": "node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=90 --test-coverage-include=scripts/dco-check.mjs scripts/dco-check.test.mjs && node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=90 --test-coverage-include=scripts/lib/main-module.mjs scripts/lib/main-module.test.mjs",
+    "validate": "npm run format:check && npm run lint && npm run typecheck && npm run test:scripts && npm run test",
+    "dco:check": "node scripts/dco-check.mjs",
+    "local:dco": "node scripts/dco-check.mjs --base origin/main",
+    "local:gate": "npm run validate && npm run local:dco"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260702.1",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.5",
+    "@vitest/coverage-v8": "4.1.12",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "prettier": "3.8.4",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "4.1.12"
+  }
+}

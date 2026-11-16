@@ -66,19 +66,27 @@ async function readSubstrate(env) {
   await Promise.all(
     SUBSTRATE_KEYS.map(async (key) => {
       const raw = await env.BREADCRUMBS.get(key);
-      try { out[key] = raw ? JSON.parse(raw) : null; }
-      catch { out[key] = raw; }
-    })
+      try {
+        out[key] = raw ? JSON.parse(raw) : null;
+      } catch {
+        out[key] = raw;
+      }
+    }),
   );
   // breadcrumbs: also check which-way-north for active projects
   const list = await env.BREADCRUMBS.list();
-  const projectKeys = list.keys.filter((k) => k.name.startsWith("which-way-north:"));
+  const projectKeys = list.keys.filter((k) =>
+    k.name.startsWith("which-way-north:"),
+  );
   await Promise.all(
     projectKeys.map(async (k) => {
       const raw = await env.BREADCRUMBS.get(k.name);
-      try { out[k.name] = raw ? JSON.parse(raw) : null; }
-      catch { out[k.name] = raw; }
-    })
+      try {
+        out[k.name] = raw ? JSON.parse(raw) : null;
+      } catch {
+        out[k.name] = raw;
+      }
+    }),
   );
   return out;
 }
@@ -123,9 +131,10 @@ function buildSystemPrompt(substrate, passages) {
   const substrateLines = [];
   for (const [key, value] of Object.entries(substrate)) {
     if (value) {
-      const v = typeof value === "object" && value._value !== undefined
-        ? value._value
-        : value;
+      const v =
+        typeof value === "object" && value._value !== undefined
+          ? value._value
+          : value;
       const writtenBy = value?._written_by;
       const line = `- ${key}: ${JSON.stringify(v)}${writtenBy ? ` (written by ${writtenBy})` : ""}`;
       substrateLines.push(line);
@@ -267,10 +276,13 @@ export default {
       }
     }
 
-    return jsonResponse({
-      error: "not found",
-      hint: "POST /chat, POST /ingest, GET /health, GET /state, GET /memoir/list",
-    }, 404);
+    return jsonResponse(
+      {
+        error: "not found",
+        hint: "POST /chat, POST /ingest, GET /health, GET /state, GET /memoir/list",
+      },
+      404,
+    );
   },
 };
 
