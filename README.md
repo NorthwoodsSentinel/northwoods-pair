@@ -133,3 +133,12 @@ This template exists because patterns travel. If yours teaches someone something
 ---
 
 *Built with care. Madison, WI. 2026.*
+
+## Development (NOR-381)
+
+The repo's rules are in `AGENTS.md` (`CLAUDE.md` points to it); where they came from is in `PROVENANCE.md`.
+
+- `npm ci` installs the dev tooling from `package-lock.json`.
+- `npm run format` formats; `npm run local:gate` is the pre-push gate: format check, lint, typecheck, the guard scripts' tests, and `test/worker.test.ts` (the Worker with fake bindings) with per-file coverage of 90 on all four measures; then the sign-off check `local:dco`.
+- `.github/workflows/main.yml` runs the same gate (minus `local:dco`) on pull requests; `.github/workflows/dco.yml` and `scripts/dco-check.mjs` check that every commit is signed off. Neither deploys.
+

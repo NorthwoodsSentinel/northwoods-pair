@@ -1,0 +1,20 @@
+{
+  // The typecheck project (NOR-381, added with the dev tooling; the repo had
+  // no tsconfig). It covers the TypeScript tests and config. worker.js is
+  // JavaScript: the tests read its types (allowJs) but it is not typechecked;
+  // Node types are for vitest.config.ts, which reads the file system
+  // (checkJs off); it is linted and tested.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "types": ["@cloudflare/workers-types", "node"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true
+  },
+  "include": ["test/**/*.ts", "vitest.config.ts"]
+}

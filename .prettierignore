@@ -1,0 +1,11 @@
+# Files `npm run format` and `npm run format:check` leave alone (NOR-381).
+# Prettier also skips everything in .gitignore.
+
+# Coverage report written by `npm run test`.
+coverage/
+
+
+# Build and wrangler output: never a gate target (AGENTS.md). The same names
+# as the inventory in vitest.config.ts.
+dist/
+.wrangler/

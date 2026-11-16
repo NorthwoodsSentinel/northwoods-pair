@@ -1,0 +1,73 @@
+# CI for northwoods-pair (NOR-381, the Cliff factory refactor).
+#
+# Shaped after the MCP Inspector's CI workflow (modelcontextprotocol/inspector,
+# .github/workflows/main.yml at commit d330df96): the same file name and
+# workflow name, the same least-privilege `permissions`, a pinned runtime, and
+# a `timeout-minutes` on the job. This repo installs with npm from
+# package-lock.json (`npm ci`, the Inspector's own install); the gate line is
+# this repo's.
+#
+# One job runs every stage of `npm run local:gate`, the command a developer
+# runs before pushing, except `local:dco`: `validate` (format check, lint,
+# typecheck, the guard scripts' own tests, and the tests with per-file
+# coverage). `local:dco` reads `origin/main`, which this shallow checkout
+# does not have, so it stays local (the Inspector's reason, its
+# docs/quality-gate.md:59); a pull request's commits are checked by
+# .github/workflows/dco.yml instead.
+#
+# This workflow holds no secret and can write nothing. It deploys nothing.
+#
+# Limits: a pull request that edits this file, or the scripts it runs, is
+# judged by the edited version (as in the Inspector; the control is review of
+# the diff). The check is not REQUIRED for merging until a repository ruleset
+# exists (the owner's act); the job name `validate` below is the name that
+# ruleset will match, so rename both together or not at all.
+
+name: CI
+
+on:
+  # `pull_request`, not `pull_request_target`: the workflow runs from the pull
+  # request's own revision with a read-only token and no secret.
+  # No branch or path filter: a required check that a filter skips would stay
+  # "expected" forever.
+  pull_request:
+  # Pushes are limited to the branch pull requests merge into, so a pull
+  # request branch is not run twice.
+  push:
+    branches: [main]
+
+# Least privilege for GITHUB_TOKEN (the Inspector's block, verbatim). Without
+# it the job would inherit the repository's default token permissions.
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    # PROVISIONAL: no run of this workflow had been observed when it was
+    # written. The rule is roughly twice the slowest observed run, rounded up
+    # to the next five minutes. 10 minutes is a provisional value, a hung-job guard, not a flake remedy. Re-size it from
+    # observed runs, with the range, once there are some.
+    timeout-minutes: 10
+
+    steps:
+      # Every action is pinned to a commit SHA with its exact release, each
+      # SHA and release from one tag lookup (2026-11-14).
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Nothing here pushes; do not leave the token in the checkout.
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.x"
+
+      - name: Install dependencies
+        # From package-lock.json, without running any dependency's install
+        # script: nothing the gate runs needs one.
+        run: npm ci --ignore-scripts
+
+      - name: Run the gate (every stage of local:gate but the local-only local:dco)
+        run: npm run validate
