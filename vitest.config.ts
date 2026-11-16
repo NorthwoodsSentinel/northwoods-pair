@@ -53,7 +53,7 @@ for (const t of GUARD_TEST_FILES) {
 const GENERATED = ["node_modules", "coverage", "dist", ".wrangler"];
 const onDisk = readdirSync(ROOT, { recursive: true, encoding: "utf8" }).filter(
   (f) =>
-    /\.(test|spec)\.(ts|mts|cts|tsx|js|mjs|cjs)$/.test(f) &&
+    /\.(test|spec)\.(ts|mts|cts|tsx|js|mjs|cjs|jsx)$/.test(f) &&
     !f.split("/").some((part) => GENERATED.includes(part)),
 );
 for (const f of onDisk) {
@@ -75,7 +75,7 @@ export default defineConfig({
       reporter: [["text", { skipFull: false }], "json-summary"],
       // The whole tree over every JS and TS extension, so a new file anywhere
       // is measured (and fails at 0) without anyone remembering to add it.
-      include: ["**/*.{js,mjs,cjs}", "**/*.{ts,mts,cts,tsx}"],
+      include: ["**/*.{js,mjs,cjs,jsx}", "**/*.{ts,mts,cts,tsx}"],
       exclude: [
         // Test files are not code under test.
         "**/*.test.*",
